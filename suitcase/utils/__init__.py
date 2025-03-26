@@ -92,6 +92,9 @@ class Artifact:
             def wrapped_close():
                 handle.seek(0, os.SEEK_END)
                 self._final_size = handle.tell()
+                # Reset close method, so that it can be called again, doing nothing
+                # Otherwise handle.seek above raises an exception on the second call
+                handle.close = orig_close
                 orig_close()
 
             handle.close = wrapped_close
